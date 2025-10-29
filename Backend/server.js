@@ -165,6 +165,40 @@ app.get("/fetchAllBlogs", async (req, res) => {
     }
 });
 
+app.get("/fetchMyBlogs", async (req, res) => {
+    try {
+        const {userId} = req.query;
+        console.log(userId)
+        if(!userId) {
+            return res.send({
+                ok: false,
+                message: "UserId is required"
+            })
+        }
+
+        const result = await blogData.find({ _id: userId });
+        console.log(result)
+        if (!result.length) {
+            return res.send({
+                ok: false,
+                message: 'Something issue with myBlogs'
+            });
+        }
+
+        res.status(200).send({
+            ok: true,
+            data: result
+        })
+
+    } catch(err) {     
+        console.log("Error fetching MyBlofgs:", err);
+        return res.send({
+            ok: false,
+            message: "failed to fatch My Blogs"
+        });
+    }
+})
+
 app.post("/addBlog", async (req, res) => {
     try {
         const { topic, blog, userId } = req.body;
@@ -172,7 +206,7 @@ app.post("/addBlog", async (req, res) => {
         if (!topic || !blog || !userId) {
             return res.send({
                 ok: false,
-                message: "All fields are required: topic, topic"
+                message: "All fields are required: topic, blog"
             });
         }
 
@@ -224,6 +258,56 @@ app.delete("/deleteBlog", async (req, res) => {
         });
     }
 })
+
+app.patch("/updateBlog", async (req, res) => {
+    try {
+        const { topic, blog, userId, _id } = req.body;
+        
+        if (!userId && !_id) {
+            return res.send({
+                ok: false,
+                message: "userId and _id is required"
+            });
+        }
+        if (!topic && !blog) {
+            return res.send({
+                ok: false,
+                message: "At least one field (topic or blog) is required to update"
+            });
+        }
+
+        const updateData = {};
+        if (topic) updateData.topic = topic;
+        if (blog) updateData.blog = blog;
+
+        const updatedBlog = await blogData.findOneAndUpdate(
+            { _id, userId },
+            { $set: updateData },
+            { new: true }
+        );
+
+        if (!updatedBlog) {
+            return res.send({
+                ok: false,
+                message: "Blog not found"
+            });
+        }
+
+        res.send({
+            ok: true,
+            message: "Blog Updated Successfully",
+            data: updatedBlog
+        });
+
+    } catch (err) {
+        console.log(err);
+        return res.send({
+            ok: false,
+            message: "Failed to update Blog"
+        });
+    }
+});
+
 
 app.listen(port, hostName, () => {
     console.log(`Server is Running on http://${hostName}:${port}`)
