@@ -265,7 +265,7 @@ app.patch("/updateBlog", async (req, res) => {
         
         if (!userId && !_id) {
             return res.send({
-                ok: false,
+                ok: false,  
                 message: "userId and _id is required"
             });
         }
