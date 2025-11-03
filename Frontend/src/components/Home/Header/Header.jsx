@@ -27,14 +27,6 @@ const Header = () => {
 
     return (
         <div>
-            {/* <div className="hidden-header">
-                <div className="hidden__logo">
-                    <img src={blogLogo} alt="Blogger Logo" />
-                    <p>Blogger</p>
-                </div>
-                <button className="hidden-header__login-btn">Login</button>
-            </div> */}
-
             <header ref={headerRef} className="header">
                 <div className="header__logo">
                     <img src={blogLogo} alt="Blogger Logo" />

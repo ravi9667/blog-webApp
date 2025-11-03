@@ -8,7 +8,7 @@ const Hero = () => {
             <header className="hero-header">
                 <h2>Publish your passions, your way</h2>
                 <p>Create a unique and beautiful blog easily.</p>
-                <p>CREATE YOUR BLOG</p>
+                <button>CREATE YOUR BLOG</button>
             </header>
             <div className="hero-background">
                 <div className="theme red">
