@@ -1,53 +1,101 @@
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-
-  &__logo {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
 
-    img {
-      width: 40px;
-      height: 40px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: transform 0.4s ease-in-out;
+    transform: translateY(-100%);
+    /* 👈 start hidden by default */
+
+    &__logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        img {
+            width: 40px;
+            height: 40px;
+        }
+
+        p {
+            font-weight: bold;
+            font-size: 1.2rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
     }
 
-    p {
-      font-weight: bold;
-      font-size: 1.2rem;
+    &__buttons {
+        display: flex;
+        gap: 1rem;
+
+        button {
+            background: none;
+            border: 1px solid #ff5722;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: #ff5722;
+                color: white;
+            }
+        }
+
+        .header__login-btn {
+            border-color: #666;
+            color: #333;
+
+            &:hover {
+                background: #333;
+                color: #fff;
+            }
+        }
     }
-  }
-
-  &__buttons {
-    display: flex;
-    gap: 1rem;
-
-    button {
-      background: none;
-      border: 1px solid #ff5722;
-      padding: 0.6rem 1.2rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: #ff5722;
-        color: white;
-      }
-    }
-
-    .header__login-btn {
-      border-color: #666;
-      color: #333;
-
-      &:hover {
-        background: #333;
-        color: #fff;
-      }
-    }
-  }
 }
+.header:not(.header-hidden) {
+    transform: translateY(0);
+}
+.header-hidden {
+    transform: translateY(-100%);
+}
+// .hidden-header {
+//     position: fixed;
+//     width: 100%;
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     padding: 1rem 2rem;
+
+//     .hidden__logo {
+//         display: flex;
+//         align-items: center;
+//         gap: 0.5rem;
+
+//         img {
+//             width: 40px;
+//             height: 40px;
+//         }
+//         p {
+//             font-weight: bold;
+//             font-size: 1.2rem;
+//             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+//         }
+//     }
+
+//     .hidden-header__login-btn {
+//         border: none;
+//         color: black;
+//         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+//         background-color: transparent;
+//         font-size: 18px;
+//     }
+// }

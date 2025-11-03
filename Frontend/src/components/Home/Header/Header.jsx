@@ -1,21 +1,53 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import blogLogo from "../../../assets/peercoin.png";
 import "./Header.scss";
 
 const Header = () => {
-  return (
-    <header className="header">
-      <div className="header__logo">
-        <img src={blogLogo} alt="Blogger Logo" />
-        <p>Blogger</p>
-      </div>
+    const headerRef = useRef(null);
+    let lastScrollY = 0;
 
-      <div className="header__buttons">
-        <button className="header__login-btn">Login</button>
-        <button className="header__create-btn">Create Your Blog</button>
-      </div>
-    </header>
-  );
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScroll = window.scrollY;
+
+            if (currentScroll > 20) {
+                headerRef.current?.classList.remove("header-hidden");
+            } else {
+                headerRef.current?.classList.add("header-hidden");
+            }
+
+            lastScrollY = currentScroll;
+        };
+
+        headerRef.current?.classList.add("header-hidden");
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    return (
+        <div>
+            {/* <div className="hidden-header">
+                <div className="hidden__logo">
+                    <img src={blogLogo} alt="Blogger Logo" />
+                    <p>Blogger</p>
+                </div>
+                <button className="hidden-header__login-btn">Login</button>
+            </div> */}
+
+            <header ref={headerRef} className="header">
+                <div className="header__logo">
+                    <img src={blogLogo} alt="Blogger Logo" />
+                    <p>Blogger</p>
+                </div>
+
+                <div className="header__buttons">
+                    <button className="header__login-btn">Login</button>
+                    <button className="header__create-btn">Create Your Blog</button>
+                </div>
+            </header>
+        </div>
+    );
 };
 
 export default Header;
