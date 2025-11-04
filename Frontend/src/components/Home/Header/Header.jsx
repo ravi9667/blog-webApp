@@ -1,44 +1,37 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import blogLogo from "../../../assets/peercoin.png";
 import "./Header.scss";
 
 const Header = () => {
-    const headerRef = useRef(null);
-    let lastScrollY = 0;
+    const [isTop, setIsTop] = useState(true);
 
     useEffect(() => {
         const handleScroll = () => {
-            const currentScroll = window.scrollY;
-
-            if (currentScroll > 20) {
-                headerRef.current?.classList.remove("header-hidden");
-            } else {
-                headerRef.current?.classList.add("header-hidden");
-            }
-
-            lastScrollY = currentScroll;
+            setIsTop(window.scrollY < 60); // top pe minimal header
         };
-
-        headerRef.current?.classList.add("header-hidden");
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     return (
-        <div>
-            <header ref={headerRef} className="header">
-                <div className="header__logo">
-                    <img src={blogLogo} alt="Blogger Logo" />
-                    <p>Blogger</p>
-                </div>
+        <header className={`header ${isTop ? "top" : "scrolled"}`}>
+            <div className="header__logo">
+                <img src={blogLogo} alt="logo" />
+                <p>Blogger</p>
+            </div>
 
-                <div className="header__buttons">
-                    <button className="header__login-btn">Login</button>
-                    <button className="header__create-btn">Create Your Blog</button>
-                </div>
-            </header>
-        </div>
+            <div className="header__actions">
+                {isTop ? (
+                    <span className="login-text">SIGN IN</span>
+                ) : (
+                    <>
+                        <button className="login-btn">Sign in</button>
+                        <button className="create-btn">Create your Blog</button>
+                    </>
+                )}
+            </div>
+        </header>
     );
 };
 

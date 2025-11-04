@@ -6,6 +6,7 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    animation: colorChange 15s cubic-bezier(0.70, -0.2, 0.30, 1.1) 0s infinite normal forwards;
 
     .hero-header {
         width: 100%;
@@ -53,7 +54,11 @@
         text-align: center;
 
         .red {
-            display: none;
+            display: block;
+
+            .red-img {
+                animation: redSlideUp 15s cubic-bezier(0.70, -0.2, 0.30, 1.1) 0s infinite normal forwards;
+            }
 
             .red-1 {
                 width: 50vw;
@@ -115,7 +120,11 @@
         }
 
         .green {
-            display: none;
+            display: block;
+
+            .green-img {
+                animation: greenSlideUp 15s cubic-bezier(0.70, -0.2, 0.30, 1.1) 0s infinite normal forwards;
+            }
 
             .green-1 {
                 position: absolute;
@@ -186,12 +195,17 @@
         .blue {
             display: block;
 
+            .blue-img {
+                animation: blueSlideUp 15s cubic-bezier(0.70, -0.2, 0.30, 1.1) 0s infinite normal forwards;
+            }
+
             .blue-1 {
                 position: absolute;
                 left: -100px;
                 top: 220px;
                 width: 22vw;
             }
+
             .blue-2 {
                 position: absolute;
                 bottom: 0;
@@ -200,35 +214,138 @@
                 height: 370px;
                 z-index: 10;
             }
+
             .blue-3 {
                 position: absolute;
                 right: 60px;
                 top: 553px;
                 width: 20vw;
             }
+
             .blue-4 {
                 position: absolute;
                 right: 90px;
                 top: 380px;
                 width: 10vw;
             }
+
             .blue-5 {
                 position: absolute;
                 right: -100px;
                 top: 200px;
                 width: 20vw;
             }
+
             .blue-6 {
                 position: absolute;
                 left: 180px;
                 top: 580px;
                 width: 11vw;
             }
+
             .blue-7 {
                 position: absolute;
                 left: -60px;
                 top: 530px;
                 width: 16vw;
+            }
+        }
+
+        @keyframes redSlideUp {
+            0% {
+                transform: translateY(350px);
+                opacity: 0;
+                
+            }
+            4% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            36% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            40% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes greenSlideUp {
+            0% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+            37% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+            41% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            71% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes blueSlideUp {
+            0% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+            74% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+            78% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            96% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(350px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes colorChange {
+            0% {
+                background: #bc382e;
+            }
+            36% {
+                background: #bc382e;
+            }
+            41% {
+                background: #388d80;
+            }
+            72% {
+                background: #388d80;
+            }
+            75% {
+                background: #4583aa;
+            }
+            96% {
+                background: #4583aa;
+            }
+            100% {
+                background: #bc382e;
             }
         }
     }
