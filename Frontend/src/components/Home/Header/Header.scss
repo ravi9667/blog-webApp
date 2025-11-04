@@ -84,11 +84,23 @@
             color: #222;
         }
 
-        .login-btn,
+        .login-btn {
+            opacity: 1;
+            transform: translateY(0);
+            
+            &:hover {
+                background: #222;
+                color: #fff;
+            }
+        }
         .create-btn {
             opacity: 1;
             transform: translateY(0);
-            /* slide down into place */
+            
+            &:hover {
+                color: #fff;
+                background: #ff5722;
+            }
         }
     }
 }
