@@ -1,0 +1,120 @@
+body {
+    background: beige;
+    font-family: Arial, sans-serif;
+}
+.login-container {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    width: 50vw;
+    padding: 40px;
+
+    .login-main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        
+        .login-card {
+            margin-bottom: 40px;
+            background: beige;
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 350px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+
+            .login-Heading {
+                text-align: center;
+                font-size: 32px;
+                color: black;
+                font-weight: bold;
+                margin-bottom: 30px;
+            }
+        }
+    }
+
+}
+.input-group {
+    position: relative;
+    width: 100%;
+}
+.group-1 {
+    margin-bottom: 20px;
+}
+.input-group input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid $input-border;
+    padding: 12px 5px 8px 0;
+    font-size: 15px;
+    color: $text-color;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.3s ease;
+    padding-right: 40px;
+}
+.input-group input:focus {
+    border-color: $input-focus;
+}
+.input-group label {
+    position: absolute;
+    left: 0px;
+    top: 12px;
+    font-size: 14px;
+    color: $label-color;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: $card-bg;
+    /* padding: 0 4px; */
+}
+.input-group input:focus+label,
+.input-group input:not(:placeholder-shown)+label {
+    transform: translateY(-16px);
+    font-size: 12px;
+    color: $primary-color;
+}
+p {
+    margin-top: 15px;
+    color: $text-color;
+    text-align: center;
+    font-size: 14px;
+}
+p span {
+    color: $link-color;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: underline;
+}
+.group-2 {
+    position: relative;
+}
+.showIcon {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    width: 23px;
+    cursor: pointer;
+}
+
+.loginApi-container {
+  position: relative;
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 20px;
+}
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
