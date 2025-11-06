@@ -1,0 +1,98 @@
+.free-domain {
+    width: 100%;
+    background: #bc382e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 86vh;
+
+    header {
+        width: 60%;
+        padding: 0 10%;
+
+        div {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+
+            h2 {
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #fff;                
+                font-weight:400;
+                line-height: 50px;
+                font-size: 45px;
+            }
+            p {
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #fff;                
+                font-weight: 500;
+                line-height: 30px;
+                font-size: 17px;
+            }
+        }
+    }
+
+    .background {
+        display: flex;
+        width: 50%;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+
+        .domain-1 {
+            position: absolute;
+            width: 850px;
+            right: -165px;
+            bottom: 150px;
+        }
+        .domain-2 {
+            position: absolute;
+            width: 550px;
+            right: -10px;
+            top: 270px;
+        }
+        .domain-3 {
+            position: absolute;
+            width: 300px;
+            right: -10px;
+            top: 145px;
+        }
+        .domain-4 {
+            position: absolute;
+            width: 200px;
+            right: -135px;
+            top: 60px;
+        }
+
+        img {
+            position: relative;
+            opacity: 0;
+        }
+        img.visible {
+            animation: slideInRight 0.6s ease-out forwards;
+        }
+        .domain-1.visible {
+            animation-delay: 0.2s;
+        }
+        .domain-3.visible {
+            animation-delay: 0.3s;
+        }
+
+        .domain-4.visible {
+            animation-delay: 0.4s;
+        }
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(200px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

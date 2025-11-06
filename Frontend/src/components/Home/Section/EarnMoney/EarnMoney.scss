@@ -1,0 +1,69 @@
+.earn-money {
+    width: 100%;
+    background: #388d80;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 86vh;
+    position: relative;
+    gap: 50px;
+
+    header {
+        width: 70%;
+        padding: 0 10%;
+
+        div {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+
+            h2 {
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #fff;                
+                font-weight:400;
+                line-height: 50px;
+                font-size: 45px;
+            }
+            p {
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #fff;                
+                font-weight: 500;
+                line-height: 30px;
+                font-size: 18px;
+                width: 75%;
+            }
+        }
+    }
+
+    .background {
+        display: flex;
+        width: 30%;
+        height: 100%;
+        align-items: center;
+
+        .money-1 {
+            width: 430px;
+            position: absolute;
+        }
+        .money-2 {
+            width: 240px;
+            position: absolute;
+            right: 215px;
+            bottom: -40px;
+        }
+        .money-3 {
+            width: 300px;
+            position: absolute;
+            right: -10px;
+            bottom: -110px;
+        }
+        .money-4 {
+            width: 80px;
+            position: absolute;
+            right: 30px;
+            bottom: 170px;
+        }
+    }
+}

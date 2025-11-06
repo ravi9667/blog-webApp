@@ -12,11 +12,11 @@ const KnowAudience = () => {
                 </div>
             </header>
             <div className="background">
-                <div>
+                <div className="upper-bg">
                     <img src={audience[0]} alt="Audience 1" className="audience-img audience-1" />
                     <img src={audience[1]} alt="Audience 2" className="audience-img audience-2"/>
                 </div>
-                <div>
+                <div className="lower-bg">
                     <img src={audience[2]} alt="Audience 3" className="audience-img audience-3"/>
                     <img src={audience[3]} alt="Audience 4" className="audience-img audience-4"/>
                 </div>

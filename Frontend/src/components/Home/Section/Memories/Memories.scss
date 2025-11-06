@@ -1,0 +1,69 @@
+.memories {
+    width: 100%;
+    background: #bc382e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 86vh;
+
+    header {
+        width: 60%;
+        padding: 0 10%;
+
+        div {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+
+            h2 {
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #fff;                
+                font-weight:400;
+                line-height: 50px;
+                font-size: 45px;
+            }
+            p {
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #fff;                
+                font-weight: 500;
+                line-height: 30px;
+                font-size: 17px;
+            }
+        }
+    }
+
+    .background {
+        display: flex;
+        width: 50%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+        .memories-1 {
+            position: absolute;
+            left: -110px;
+            bottom: 60px;
+            width: 350px;
+            height: 320px;
+            z-index: 10;
+        }
+        .memories-2 {
+            position: absolute;
+            left: 30px;
+            top : 60px;
+            width: 400px;
+            height: 350px;
+            z-index: 7;
+        }
+        .memories-3 {
+            position: absolute;
+            right: -60px;
+            top : 100px;
+            width: 330px;
+            height: 330px;
+            z-index: 5;
+        }
+    }
+}
