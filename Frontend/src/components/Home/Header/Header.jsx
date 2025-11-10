@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import blogLogo from "../../../assets/peercoin.png";
 import "./Header.scss";
+import { useNavigate } from "react-router";
 
 const Header = () => {
+    const navigate = useNavigate();
     const [isTop, setIsTop] = useState(true);
 
     useEffect(() => {
@@ -23,11 +25,11 @@ const Header = () => {
 
             <div className="header__actions">
                 {isTop ? (
-                    <span className="login-text">SIGN IN</span>
+                    <span className="login-text" onClick={() => navigate('/login')}>SIGN IN</span>
                 ) : (
                     <>
-                        <button className="login-btn">Sign in</button>
-                        <button className="create-btn">Create your Blog</button>
+                        <button className="login-btn" onClick={() => navigate('/login')}>Sign in</button>
+                        <button className="create-btn" onClick={() => navigate('/login')}>Create your Blog</button>
                     </>
                 )}
             </div>

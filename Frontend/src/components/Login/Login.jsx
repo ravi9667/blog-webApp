@@ -3,7 +3,11 @@ import Loader from "../../ReusableCompo/Loader/Loader";
 import show from '../../assets/eye.png'
 import hide from '../../assets/hide.png'
 import { useNavigate } from "react-router";
-// import './Login.scss';
+import logo from '../../assets/peercoin.png'
+import userIcon from '../../assets/user.png'
+import passIcon from '../../assets/padlock.png'
+import illustration from '../../assets/login-illustration.png'
+import './Login.scss';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -26,8 +30,16 @@ const Login = () => {
             <div className="login-container">
                 <div className="login-main">
                     <div className="login-card">
-                        <h1 className="login-Heading">Login</h1>
+                        <div className="blogger">
+                            <img src={logo} alt="Blogger-logo" width={40} height={40} />
+                            <h1 className="blogger-Heading">Blogger</h1>
+                        </div>
+                        <div>
+                            <h1>Sign In</h1>
+                            <p>Continue to Blogger</p>
+                        </div>
                         <div className="input-group group-1">
+                            <img src={userIcon} alt="" className="user-icon"/>
                             <input
                                 type="email"
                                 className="input"
@@ -39,6 +51,7 @@ const Login = () => {
                             <label>Email</label>
                         </div>
                         <div className="input-group group-2">
+                            <img src={passIcon} alt="" className="password-icon"/>
                             <input
                                 type={isPasswordHidden ? 'password' : 'text'}
                                 className="input"
@@ -51,10 +64,12 @@ const Login = () => {
                             {loginFormData.password.trim().length ? <img src={isPasswordHidden ? hide : show} alt="Eye Icon" className="showIcon" /> : null}
                         </div>
                         <button>Sign In</button>
-                        <p>Don't have an Account <span onClick={() => navigate('/signup')}>SignUp</span></p>
+                        <p>Don't have an Account <button onClick={() => navigate('/signup')}>SignUp</button></p>
                     </div>
                 </div>
-                <div className="login-illustrations"></div>
+                <div className="login-bg">
+                    <img src={illustration} alt="" className="login-illustrations"/>
+                </div>
             </div>
         )
     )

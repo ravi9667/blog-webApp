@@ -1,14 +1,17 @@
 import React from "react";
 import { red, green, blue } from "../../../../assets";
 import './Hero.scss'
+import { useNavigate } from "react-router";
 
 const Hero = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="section hero">
             <header className="hero-header">
                 <h2>Publish your passions, your way</h2>
                 <p>Create a unique and beautiful blog easily.</p>
-                <button>CREATE YOUR BLOG</button>
+                <button onClick={() => navigate('/login')}>CREATE YOUR BLOG</button>
             </header>
             <div className="hero-background">
                 <div className="theme red">
