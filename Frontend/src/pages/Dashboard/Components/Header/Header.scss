@@ -1,0 +1,75 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px;
+    border: 1px solid #ccc;
+
+    .blogger {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        p {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 500;
+            font-size: 20px;
+        }
+    }
+
+    .sections {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .all-blogs {
+            all: unset;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 0.8;
+                text-decoration: underline;
+            }
+        }
+        .my-blogs {
+            all: unset;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 0.8;
+                text-decoration: underline;
+            }
+        }
+        .add-blog {
+            all: unset;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            background-color:crimson;
+            color: white;
+            font-size: 25px;
+            padding: 2px 9px;
+            border-radius: 50%;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+        .profile {
+            all: unset;
+            background-color: rgba(0, 110, 255, 0.466);
+            color: rgb(0, 110, 255);
+            padding: 9px 10px;
+            border-radius: 50%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+}

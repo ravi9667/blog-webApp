@@ -1,0 +1,33 @@
+.blog-container {
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 10px);
+    height: 370px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+    background: #fff;
+    cursor: pointer;
+    
+    img {
+        height: 150px;
+        border-radius: 10px;
+    }
+    h1 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* number of lines you want to show */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    p {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: -webkit-box;
+        -webkit-line-clamp: 4; /* number of lines you want to show */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
