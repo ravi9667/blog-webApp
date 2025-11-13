@@ -11,9 +11,9 @@ import './Login.scss';
 
 const Login = () => {
     const navigate = useNavigate();
-    const [ loginApiData, setLoginApiData ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(false);
     const [ isPasswordHidden, setIsPasswordHidden ] = useState(true);
+    const [error, setError] = useState("");
     const [ loginFormData, setLoginFormData ] = useState({
         email: '',
         password: ''
@@ -22,6 +22,46 @@ const Login = () => {
     const handleFormInput = (field, event) => {
         setLoginFormData({...loginFormData, [field]: event.target.value})
     }
+
+    const handleLogin = async () => {
+        const { email, password } = loginFormData;
+
+        if (!email.trim() || !password.trim()) {
+            setError("All fields are required");
+            return;
+        }
+
+        setError("");
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("http://127.0.0.1:5555/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(loginFormData),
+            });
+
+            const data = await response.json();
+            console.log("Login Response:", data);
+
+            if (data.ok) {
+                // 🪪 Save JWT token
+                localStorage.setItem("token", data.token);
+
+                alert("Login Successful!");
+                navigate("/dashboard"); // redirect to dashboard or homepage
+            } else {
+                setError(data.message || "Invalid credentials");
+            }
+        } catch (err) {
+            console.error("Login Error:", err);
+            setError("Something went wrong. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         isLoading ? (

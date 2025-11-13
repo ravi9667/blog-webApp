@@ -1,8 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import jwt, { decode } from 'jsonwebtoken'
 import { blogUsers } from './Models/blogUsers.js';
 import { blogData } from './Models/blogDatas.js';
+
+dotenv.config();
+
+const app = express();
+app.use(express.json())
+app.use(cors())
 
 try {
     const mongoConnect = mongoose.connect("mongodb://localhost:27017/blogs")
@@ -13,13 +22,30 @@ try {
     console.log("Error connecting DB")
 }
 
-const app = express();
-
-app.use(express.json())
-app.use(cors())
-
-const port = 5555;
+const port = process.env.PORT || 5555;
 const hostName = '127.0.0.1';
+
+const verifyToken = (req, res, next) => {
+    const authHeader = req.header.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if(!token) {
+        return res.status(401).json({
+            ok: false,
+            message: 'to token provided'
+        });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if(err) {
+            return res.status(403).json({
+                ok: false,
+                message: 'invalid or Expired token'
+            });
+        }
+        req.user = decoded;
+        next();
+    })
+}
 
 app.get("/", (req, res) => {
     res.send("this is Home Tab")
@@ -44,17 +70,24 @@ app.post("/signup", async (req, res) => {
             })
         }
 
-        const signupData = {
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = await blogUsers.create({
             name,
             email,
-            password
-        };
+            password: hashedPassword
+        })
 
-        await blogUsers.create(signupData)
+        const token = jwt.sign(
+            { id: newUser._id, email: newUser.email },
+            process.env.JWT_SECRET,
+            {expiresIn: '1h'}
+        )
 
         res.send({
             ok: true,
-            message: "signUp Successfull"
+            message: "signUp Successful",
+            token
         })
 
     } catch(err) {
@@ -77,21 +110,33 @@ app.post("/login", async (req, res) => {
             })
         }
 
-        const result = await blogUsers.find({email: email, password: password});
-        if(!result.length) {
+        const user = await blogUsers.findOne({ email });
+        if (!user) {
             return res.send({
                 ok: false,
-                message: 'Email or password is incorrect'
+                message: 'Email is incorrect or Not found !!'
             });
         }
 
-        console.log("login data", result)
+        const isMatch = await bcrypt.compare(password, user.password);
+        if(!isMatch) {
+            return res.send({
+                ok: false,
+                message: 'Password is Incorrect !!'
+            })
+        }
+
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            {expiresIn: '1h'}
+        );
+
+        console.log("login data", user)
         res.send({
             ok: true,
             message: 'Login SuccessFully',
-            data: {
-                id: result[0]._id
-            }
+            token
         })
     } catch(err) {
         console.log(`login ${err}`);
@@ -102,62 +147,41 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/fetchUser", async (req, res) => {
+app.get("/fetchUser", verifyToken, async (req, res) => {
     try {
-        const {userId} = req.query;
-        console.log(userId)
-        if(!userId) {
-            return res.send({
-                ok: false,
-                message: "UserId is required"
-            })
-        }
+        const user = await blogUsers.findById(req.user.id, {
+            _id: 0,
+            name: 1,
+            email: 1
+        });
 
-        const result = await blogUsers.find(
-            {
-                _id: userId
-            },
-            {
-                _id: 0,
-                name: 1,
-                email: 1
-            }
-        );
-        console.log(result)
-        if (!result.length) {
+        if (!user) {
             return res.send({
                 ok: false,
-                message: 'userId is incorrect'
+                message: 'User not found'
             });
         }
 
         res.status(200).send({
             ok: true,
-            data: result[0]
-        })
-
-    } catch(err) {     
+            data: user
+        });
+    } catch (err) {
         console.log("Error fetching user:", err);
         return res.send({
             ok: false,
-            message: "failed to fatch User"
+            message: "Failed to fetch User"
         });
     }
-
 });
 
+// ✅ FETCH ALL BLOGS (Public)
 app.get("/fetchAllBlogs", async (req, res) => {
     try {
         const result = await blogData.find();
-        console.log("All Blogs",result)
-
-        res.status(200).send({
-            ok: true,
-            data: result
-        })
-
-    } catch(err) {
-        console.log(err)
+        res.status(200).send({ ok: true, data: result });
+    } catch (err) {
+        console.log(err);
         return res.send({
             ok: false,
             message: "Failed to fetch All Blogs"
@@ -165,65 +189,48 @@ app.get("/fetchAllBlogs", async (req, res) => {
     }
 });
 
-app.get("/fetchMyBlogs", async (req, res) => {
+// ✅ FETCH MY BLOGS (Protected)
+app.get("/fetchMyBlogs", verifyToken, async (req, res) => {
     try {
-        const {userId} = req.query;
-        console.log(userId)
-        if(!userId) {
-            return res.send({
-                ok: false,
-                message: "UserId is required"
-            })
-        }
-
-        const result = await blogData.find({ _id: userId });
-        console.log(result)
-        if (!result.length) {
-            return res.send({
-                ok: false,
-                message: 'Something issue with myBlogs'
-            });
-        }
-
+        const result = await blogData.find({ userId: req.user.id });
         res.status(200).send({
             ok: true,
             data: result
-        })
-
-    } catch(err) {     
-        console.log("Error fetching MyBlofgs:", err);
+        });
+    } catch (err) {
+        console.log("Error fetching MyBlogs:", err);
         return res.send({
             ok: false,
-            message: "failed to fatch My Blogs"
+            message: "Failed to fetch My Blogs"
         });
     }
-})
+});
 
-app.post("/addBlog", async (req, res) => {
+// ✅ ADD BLOG (Protected)
+app.post("/addBlog", verifyToken, async (req, res) => {
     try {
-        const { topic, blog, userId } = req.body;
+        const { topic, blog } = req.body;
 
-        if (!topic || !blog || !userId) {
+        if (!topic || !blog) {
             return res.send({
                 ok: false,
                 message: "All fields are required: topic, blog"
             });
         }
 
-        const addBlogData = {
+        const addBlog = await blogData.create({
             topic,
             blog,
-            userId
-        }
+            userId: req.user.id
+        });
 
-        const addBlog = await blogData.create(addBlogData);
         res.status(200).send({
             ok: true,
             message: "Blog Added Successfully",
             data: addBlog
         });
-    } catch(err) {
-        console.log(err)
+    } catch (err) {
+        console.log(err);
         return res.send({
             ok: false,
             message: "Failed to add Blog"
@@ -231,48 +238,52 @@ app.post("/addBlog", async (req, res) => {
     }
 });
 
-app.delete("/deleteBlog", async (req, res) => {
+// ✅ DELETE BLOG (Protected)
+app.delete("/deleteBlog", verifyToken, async (req, res) => {
     try {
-        const {blogId} = req.body;
-        if(!blogId) {
+        const { blogId } = req.body;
+        if (!blogId) {
             return res.send({
                 ok: false,
                 message: "blogId is required"
-            })
+            });
         }
 
-        const deleteBlog = await blogData.deleteOne({_id: blogId});
-        if (deleteBlog.deletedCount === 1) {
+        const deleted = await blogData.deleteOne({
+            _id: blogId,
+            userId: req.user.id
+        });
+
+        if (deleted.deletedCount === 1) {
             return res.status(200).send({
                 ok: true,
-                message: "blog Deleted Successfully"
-            })
-
+                message: "Blog Deleted Successfully"
+            });
         }
 
-    } catch(err) {
-        console.log(err)
+        res.send({
+            ok: false,
+            message: "Blog not found or not authorized"
+        });
+
+    } catch (err) {
+        console.log(err);
         return res.send({
             ok: false,
             message: "Failed to delete blog"
         });
     }
-})
+});
 
-app.patch("/updateBlog", async (req, res) => {
+// ✅ UPDATE BLOG (Protected)
+app.patch("/updateBlog", verifyToken, async (req, res) => {
     try {
-        const { topic, blog, userId, _id } = req.body;
-        
-        if (!userId && !_id) {
-            return res.send({
-                ok: false,  
-                message: "userId and _id is required"
-            });
-        }
-        if (!topic && !blog) {
+        const { topic, blog, _id } = req.body;
+
+        if (!_id) {
             return res.send({
                 ok: false,
-                message: "At least one field (topic or blog) is required to update"
+                message: "Blog _id is required"
             });
         }
 
@@ -281,7 +292,7 @@ app.patch("/updateBlog", async (req, res) => {
         if (blog) updateData.blog = blog;
 
         const updatedBlog = await blogData.findOneAndUpdate(
-            { _id, userId },
+            { _id, userId: req.user.id },
             { $set: updateData },
             { new: true }
         );
@@ -289,7 +300,7 @@ app.patch("/updateBlog", async (req, res) => {
         if (!updatedBlog) {
             return res.send({
                 ok: false,
-                message: "Blog not found"
+                message: "Blog not found or not authorized"
             });
         }
 

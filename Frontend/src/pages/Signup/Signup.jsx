@@ -14,6 +14,7 @@ const Signup = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+    const [error, setError] = useState("");
     const [signupFormData, setSignupFormData] = useState({
         name: "",
         email: "",
@@ -22,6 +23,46 @@ const Signup = () => {
 
     const handleFormInput = (field, event) => {
         setSignupFormData({ ...signupFormData, [field]: event.target.value });
+    };
+
+    const handleSignup = async () => {
+        const { name, email, password } = signupFormData;
+
+        if (!name.trim() || !email.trim() || !password.trim()) {
+            setError("All fields are required");
+            return;
+        }
+
+        setError("");
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("http://127.0.0.1:5555/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(signupFormData),
+            });
+
+            const data = await response.json();
+            console.log("Signup Response:", data);
+
+            if (data.ok) {
+                // 🪪 Save JWT token in localStorage
+                localStorage.setItem("token", data.token);
+
+                alert("Signup Successful!");
+                navigate("/login"); // Redirect after signup
+            } else {
+                setError(data.message || "Signup failed");
+            }
+        } catch (err) {
+            console.error("Signup Error:", err);
+            setError("Something went wrong. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return isLoading ? (
