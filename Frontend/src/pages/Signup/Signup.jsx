@@ -49,11 +49,10 @@ const Signup = () => {
             console.log("Signup Response:", data);
 
             if (data.ok) {
-                // 🪪 Save JWT token in localStorage
                 localStorage.setItem("token", data.token);
 
                 alert("Signup Successful!");
-                navigate("/login"); // Redirect after signup
+                navigate("/login");
             } else {
                 setError(data.message || "Signup failed");
             }
@@ -124,7 +123,7 @@ const Signup = () => {
                             />
                         ) : null}
                     </div>
-                    <button>Sign Up</button>
+                    <button onClick={handleSignup}>Sign Up</button>
                     <p>
                         Already have an Account?{" "}
                         <button onClick={() => navigate("/login")}>Sign In</button>

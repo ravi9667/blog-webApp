@@ -4,15 +4,22 @@ import AddBlog from "../../Components/AddBlog/AddBlog";
 import Profile from "../Profile/Profile";
 import './Header.scss';
 
-const Header = () => {
+const Header = ({user}) => {
     const [showAddBlog, setShowAddBlog] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
 
-    const handleAddBlog = () => setShowAddBlog(true);
-    const closeAddBlog = () => setShowAddBlog(false);
+    console.log(user)
 
-    const toggleProfile = () => setShowProfile(!showProfile);
-    const closeProfile = () => setShowProfile(false);
+    const getInitials = () => {
+        if( !user || !user.name) {
+            return 'U';
+        }
+
+        const parts = user.name.trim().split(" ");
+        const first = parts[0][0].toUpperCase();
+        const last = parts.length > 1 ? parts[parts.length - 1][0].toUpperCase() : "";
+        return first + last;
+    }
 
     return (
         <>
@@ -25,16 +32,19 @@ const Header = () => {
                 <div className="sections">
                     <button className="all-blogs">All Blogs</button>
                     <button className="my-blogs">My Blogs</button>
-                    <button className="add-blog" onClick={handleAddBlog}>+</button>
+                    <button className="add-blog" onClick={() => setShowAddBlog(true)}>+</button>
 
                     <div className="profile-wrapper">
-                        <button className="profile" onClick={toggleProfile}>RA</button>
-                        {showProfile && <Profile onClose={closeProfile} />}
+                        <button className="profile" onClick={() => setShowProfile(!showProfile)}>{getInitials()}</button>
+
+                        {showProfile && (
+                            <Profile user={user} onClose={() => setShowProfile(false)} />
+                        )}
                     </div>
                 </div>
             </div>
 
-            {showAddBlog && <AddBlog onClose={closeAddBlog} />}
+            {showAddBlog && <AddBlog onClose={() => setShowAddBlog(false)} />}
         </>
     );
 };

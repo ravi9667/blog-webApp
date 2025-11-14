@@ -26,26 +26,29 @@ const port = process.env.PORT || 5555;
 const hostName = '127.0.0.1';
 
 const verifyToken = (req, res, next) => {
-    const authHeader = req.header.authorization;
+    const authHeader = req.headers.authorization; // FIXED
     const token = authHeader && authHeader.split(' ')[1];
-    if(!token) {
+
+    if (!token) {
         return res.status(401).json({
             ok: false,
-            message: 'to token provided'
+            message: 'no token provided'
         });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if(err) {
+        if (err) {
             return res.status(403).json({
                 ok: false,
-                message: 'invalid or Expired token'
+                message: 'invalid or expired token'
             });
         }
+
         req.user = decoded;
         next();
-    })
-}
+    });
+};
+
 
 app.get("/", (req, res) => {
     res.send("this is Home Tab")

@@ -47,12 +47,9 @@ const Login = () => {
             console.log("Login Response:", data);
 
             if (data.ok) {
-                // 🪪 Save JWT token
                 localStorage.setItem("token", data.token);
-
                 alert("Login Successful!");
-                navigate("/dashboard"); // redirect to dashboard or homepage
-            } else {
+                navigate("/dashboard");
                 setError(data.message || "Invalid credentials");
             }
         } catch (err) {
@@ -101,9 +98,9 @@ const Login = () => {
                                 value={loginFormData.password}
                             />
                             <label>Password</label>
-                            {loginFormData.password.trim().length ? <img src={isPasswordHidden ? hide : show} alt="Eye Icon" className="showIcon" /> : null}
+                            {loginFormData.password.trim().length ? <img src={isPasswordHidden ? hide : show} alt="Eye Icon" onClick={() => setIsPasswordHidden(!isPasswordHidden)} className="showIcon" /> : null}
                         </div>
-                        <button>Sign In</button>
+                        <button onClick={handleLogin}>Sign In</button>
                         <p>Don't have an Account <button onClick={() => navigate('/signup')}>SignUp</button></p>
                     </div>
                 </div>

@@ -1,17 +1,29 @@
 import React from "react";
 import "./Profile.scss";
 
-const Profile = ({ onClose }) => {
+const Profile = ({ user, onClose }) => {
+
+    const toTitleCase = (str) => {
+        return str
+            .split(" ")
+            .map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            )
+            .join(" ");
+    };
+
     const handleLogout = () => {
-        alert("Logged out successfully!");
+        localStorage.removeItem("token");
         onClose();
+        alert("Logged out successfully!");
+        window.location.href = "/";
     };
 
     return (
         <div className="profile-menu">
             <div className="profile-info">
-                <p className="name">Ravi Ahirwar</p>
-                <p className="email">ravi@gmail.com</p>
+                <p className="name">{user ? toTitleCase(user.name): "user"}</p>
+                <p className="email">{user ? user.email : "user@example.com"}</p>
             </div>
 
             <hr />
