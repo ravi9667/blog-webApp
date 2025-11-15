@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt, { decode } from 'jsonwebtoken'
+
+import { upload } from './Middleware/upload.js';
 import { blogUsers } from './Models/blogUsers.js';
 import { blogData } from './Models/blogDatas.js';
 
@@ -12,6 +14,8 @@ dotenv.config();
 const app = express();
 app.use(express.json())
 app.use(cors())
+
+app.use("/uploads", express.static("uploads"));
 
 try {
     const mongoConnect = mongoose.connect("mongodb://localhost:27017/blogs")
@@ -210,27 +214,30 @@ app.get("/fetchMyBlogs", verifyToken, async (req, res) => {
 });
 
 // ✅ ADD BLOG (Protected)
-app.post("/addBlog", verifyToken, async (req, res) => {
+app.post("/addBlog", verifyToken, upload.single("img"), async (req, res) => {
     try {
         const { topic, blog } = req.body;
 
         if (!topic || !blog) {
             return res.send({
                 ok: false,
-                message: "All fields are required: topic, blog"
+                message: "Topic & Blog content required"
             });
         }
 
-        const addBlog = await blogData.create({
+        const img = req.file ? req.file.filename : null;
+
+        const newBlog = await blogData.create({
             topic,
             blog,
-            userId: req.user.id
+            img,
+            userId: req.user.id   // ✔ LOGIN USER ID STORED HERE
         });
 
         res.status(200).send({
             ok: true,
             message: "Blog Added Successfully",
-            data: addBlog
+            data: newBlog
         });
     } catch (err) {
         console.log(err);

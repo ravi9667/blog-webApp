@@ -10,21 +10,40 @@ const AddBlog = ({ onClose }) => {
         setImage(e.target.files[0]);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // You can later connect this to your backend or state
-        console.log({
-            image,
-            title,
-            content
-        });
+        const formData = new FormData();
+        formData.append('img', image);
+        formData.append('topic', title);
+        formData.append('blog', content)
 
-        // Clear inputs
-        setImage(null);
-        setTitle("");
-        setContent("");
-        onClose();
+        try {
+            const response = await fetch("http://127.0.0.1:5555/addBlog", {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                },
+                body: formData
+            })
+
+            const data = await response.json()
+            console.log("Add Blog Res:", data)
+
+            if (data.ok) {
+                alert("Blog Added Successfully");
+                onClose(); // close modal
+            } else {
+                alert(data.message);
+            }
+
+            setImage(null);
+            setTitle("");
+            setContent("");
+        } catch {
+            console.error("Error adding blog:", error);
+            alert("Something went wrong");
+        }
     };
 
     return (
@@ -55,7 +74,7 @@ const AddBlog = ({ onClose }) => {
 
                     <div className="buttons">
                         <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="submit-btn">Publish</button>
+                        <button type="submit" className="submit-btn" onClick={handleSubmit}>Publish</button>
                     </div>
                 </form>
             </div>

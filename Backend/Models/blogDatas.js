@@ -3,12 +3,10 @@ import mongoose from "mongoose";
 const blogDataSchema = mongoose.Schema({
     topic: {
         type: String,
-        lowercase: true,
         required: true
     },
     blog: {
         type: String,
-        lowercase: true,
         required: true
     },
     userId: {
