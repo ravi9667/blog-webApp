@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './AddBlog.scss';
 
-const AddBlog = ({ onClose }) => {
+const AddBlog = ({ onClose, onBlogAdded }) => {
     const [image, setImage] = useState(null);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -14,33 +14,30 @@ const AddBlog = ({ onClose }) => {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('img', image);
-        formData.append('topic', title);
-        formData.append('blog', content)
+        formData.append("img", image);
+        formData.append("topic", title);
+        formData.append("blog", content);
 
         try {
             const response = await fetch("http://127.0.0.1:5555/addBlog", {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 },
                 body: formData
-            })
+            });
 
-            const data = await response.json()
-            console.log("Add Blog Res:", data)
+            const data = await response.json();
+            console.log("Add Blog Res:", data);
 
             if (data.ok) {
                 alert("Blog Added Successfully");
-                onClose(); // close modal
+                onBlogAdded(); // ← Auto refresh dashboard blogs
+                onClose();     // Close modal
             } else {
                 alert(data.message);
             }
-
-            setImage(null);
-            setTitle("");
-            setContent("");
-        } catch {
+        } catch (error) {
             console.error("Error adding blog:", error);
             alert("Something went wrong");
         }
@@ -50,6 +47,7 @@ const AddBlog = ({ onClose }) => {
         <div className="add-blog-overlay">
             <div className="add-blog-modal">
                 <h2>Add New Blog</h2>
+
                 <form onSubmit={handleSubmit}>
                     <label>Blog Image:</label>
                     <input type="file" accept="image/*" onChange={handleImageChange} />
@@ -73,8 +71,13 @@ const AddBlog = ({ onClose }) => {
                     ></textarea>
 
                     <div className="buttons">
-                        <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="submit-btn" onClick={handleSubmit}>Publish</button>
+                        <button type="button" className="cancel-btn" onClick={onClose}>
+                            Cancel
+                        </button>
+
+                        <button type="submit" className="submit-btn">
+                            Publish
+                        </button>
                     </div>
                 </form>
             </div>

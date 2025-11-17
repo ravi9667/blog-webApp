@@ -12,48 +12,77 @@ const Dashboard = () => {
     const [isloading, setIsLoading] = useState(true)
 
     const fetchAllBlogs = async () => {
+        setIsLoading(true);
         try {
-            const response = await fetch("http://127.0.0.1:5555/fetchAllBlogs");
-            const data = await response.json();
+            const res = await fetch("http://127.0.0.1:5555/fetchAllBlogs");
+            const data = await res.json();
 
-            console.log("FETCH ALL BLOGS:", data);
-
-            if (data.ok) {
-                setBlogs(data.data);
-            } else {
-                alert(data.message);
-            }
-
-        } catch (error) {
-            console.error("Error fetching blogs:", error);
+            if (data.ok) setBlogs(data.data);
+            else alert(data.message);
+        } catch (err) {
+            console.log("All blogs error:", err);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const getUser = async () => {
-        const data = await apiCall("http://127.0.0.1:5555/fetchUser")
+    // ---------- FETCH MY BLOGS ----------
+    const fetchMyBlogs = async () => {
+        if (!user) return alert("Please Login!");
 
-        if (data?.ok) {
-            setUser(data?.data)
+        setIsLoading(true);
+
+        try {
+            const token = localStorage.getItem("token");
+
+            const res = await fetch("http://127.0.0.1:5555/fetchMyBlogs", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = await res.json();
+
+            if (data.ok) setBlogs(data.data);
+            else alert(data.message);
+
+        } catch (err) {
+            console.log("My blogs error:", err);
+        } finally {
+            setIsLoading(false);
         }
-    }
+    };
 
+    // ---------- FETCH USER ----------
+    const getUser = async () => {
+        const data = await apiCall("http://127.0.0.1:5555/fetchUser");
+        if (data?.ok) setUser(data?.data);
+    };
+
+    // ---------- ON MOUNT: USER + ALL BLOGS ----------
     useEffect(() => {
         getUser();
-        fetchAllBlogs();
-    }, [])
+        fetchAllBlogs();  // show all blogs on mount
+    }, []);
 
     return (
         <div className="dashboard-container">
-            <Header user={user} />
+            <Header
+                user={user}
+                fetchAllBlogs={fetchAllBlogs}
+                fetchMyBlogs={fetchMyBlogs}
+                setBlogs={setBlogs}
+            />
             <BlogBackground />
-            {isloading ? <Loader /> : (
-                < div className="blogs">
-                    <Blogs />
+
+            {isloading ? (
+                <Loader />
+            ) : (
+                <div className="blogs">
+                    <Blogs blogs={blogs} />
                 </div>
             )}
-        </div >
+        </div>
     )
 }
 
