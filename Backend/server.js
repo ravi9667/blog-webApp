@@ -182,7 +182,6 @@ app.get("/fetchUser", verifyToken, async (req, res) => {
     }
 });
 
-// ✅ FETCH ALL BLOGS (Public)
 app.get("/fetchAllBlogs", async (req, res) => {
     try {
         const result = await blogData.find();
@@ -196,7 +195,6 @@ app.get("/fetchAllBlogs", async (req, res) => {
     }
 });
 
-// ✅ FETCH MY BLOGS (Protected)
 app.get("/fetchMyBlogs", verifyToken, async (req, res) => {
     try {
         const result = await blogData.find({ userId: req.user.id });
@@ -213,7 +211,6 @@ app.get("/fetchMyBlogs", verifyToken, async (req, res) => {
     }
 });
 
-// ✅ ADD BLOG (Protected)
 app.post("/addBlog", verifyToken, upload.single("img"), async (req, res) => {
     try {
         const { topic, blog } = req.body;
@@ -231,7 +228,7 @@ app.post("/addBlog", verifyToken, upload.single("img"), async (req, res) => {
             topic,
             blog,
             img,
-            userId: req.user.id   // ✔ LOGIN USER ID STORED HERE
+            userId: req.user.id
         });
 
         res.status(200).send({
@@ -248,7 +245,6 @@ app.post("/addBlog", verifyToken, upload.single("img"), async (req, res) => {
     }
 });
 
-// ✅ DELETE BLOG (Protected)
 app.delete("/deleteBlog", verifyToken, async (req, res) => {
     try {
         const { blogId } = req.body;
@@ -285,7 +281,6 @@ app.delete("/deleteBlog", verifyToken, async (req, res) => {
     }
 });
 
-// ✅ UPDATE BLOG (Protected)
 app.patch("/updateBlog", verifyToken, async (req, res) => {
     try {
         const { topic, blog, _id } = req.body;

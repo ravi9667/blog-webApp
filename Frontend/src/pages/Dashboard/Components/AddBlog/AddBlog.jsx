@@ -32,8 +32,8 @@ const AddBlog = ({ onClose, onBlogAdded }) => {
 
             if (data.ok) {
                 alert("Blog Added Successfully");
-                onBlogAdded(); // ← Auto refresh dashboard blogs
-                onClose();     // Close modal
+                onBlogAdded();
+                onClose();
             } else {
                 alert(data.message);
             }

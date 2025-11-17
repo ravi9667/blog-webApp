@@ -26,7 +26,6 @@ const Dashboard = () => {
         }
     };
 
-    // ---------- FETCH MY BLOGS ----------
     const fetchMyBlogs = async () => {
         if (!user) return alert("Please Login!");
 
@@ -53,16 +52,14 @@ const Dashboard = () => {
         }
     };
 
-    // ---------- FETCH USER ----------
     const getUser = async () => {
         const data = await apiCall("http://127.0.0.1:5555/fetchUser");
         if (data?.ok) setUser(data?.data);
     };
 
-    // ---------- ON MOUNT: USER + ALL BLOGS ----------
     useEffect(() => {
         getUser();
-        fetchAllBlogs();  // show all blogs on mount
+        fetchAllBlogs();
     }, []);
 
     return (
@@ -79,7 +76,7 @@ const Dashboard = () => {
                 <Loader />
             ) : (
                 <div className="blogs">
-                    <Blogs blogs={blogs} />
+                    <Blogs blogs={blogs} user={user} />
                 </div>
             )}
         </div>
