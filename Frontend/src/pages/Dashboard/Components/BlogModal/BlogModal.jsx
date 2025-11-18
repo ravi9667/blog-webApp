@@ -13,7 +13,6 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
         year: 'numeric'
     });
 
-    // ---------- HANDLE UPDATE ----------
     const handleUpdate = async () => {
         const token = localStorage.getItem("token");
 
@@ -35,15 +34,14 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
 
         if (data.ok) {
             alert("Blog Updated Successfully");
-            onUpdate();      // refresh blogs in dashboard
+            onUpdate();
             setIsEditing(false);
-            onClose();       // close modal
+            onClose();
         } else {
             alert(data.message);
         }
     };
 
-    // ---------- HANDLE DELETE ----------
     const handleDelete = async () => {
         if (!window.confirm("Are you sure you want to delete this blog?")) return;
 
@@ -63,14 +61,14 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
 
         if (data.ok) {
             alert("Blog Deleted Successfully");
-            onDelete();   // refresh dashboard
-            onClose();    // close modal
+            onDelete();
+            onClose();
         } else {
             alert(data.message);
         }
     };
 
-    const isAuthor = blog.userId === currentUser?.id;
+    const isAuthor = blog.userId?._id.toString() === currentUser?._id.toString();
 
     return (
         <div className="blog-modal-overlay">
@@ -83,8 +81,6 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
                         alt="blog"
                     />
                 )}
-
-                {/* EDIT MODE */}
                 {isEditing ? (
                     <>
                         <input
@@ -92,21 +88,14 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
                         />
-
                         <textarea
                             className="edit-content"
                             rows="8"
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
                         ></textarea>
-
-                        <button className="save-btn" onClick={handleUpdate}>
-                            Save Changes
-                        </button>
-
-                        <button className="cancel-edit-btn" onClick={() => setIsEditing(false)}>
-                            Cancel
-                        </button>
+                        <button className="save-btn" onClick={handleUpdate}>Save Changes</button>
+                        <button className="cancel-edit-btn" onClick={() => setIsEditing(false)}>Cancel</button>
                     </>
                 ) : (
                     <>
@@ -114,21 +103,15 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
                         <p className="blog-text">{blog.blog}</p>
 
                         <div className="author-box">
-                            <h4>Author — {blog.authorName || 'Unknown'}</h4>
+                            <h4>Author — {blog.userId?.name || 'Unknown'}</h4>
                             <p>Created — {createdDate}</p>
                         </div>
                     </>
                 )}
-
-                {/* ACTION BUTTONS */}
                 {isAuthor && !isEditing && (
                     <div className="actions">
-                        <button className="edit-btn" onClick={() => setIsEditing(true)}>
-                            Edit Blog
-                        </button>
-                        <button className="delete-btn" onClick={handleDelete}>
-                            Delete Blog
-                        </button>
+                        <button className="edit-btn" onClick={() => setIsEditing(true)}>Edit Blog</button>
+                        <button className="delete-btn" onClick={handleDelete}>Delete Blog</button>
                     </div>
                 )}
             </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from '../../../../assets/peercoin.png';
-import AddBlog from "../../Components/AddBlog/AddBlog";
-import Profile from "../Profile/Profile";
+import AddBlog from "../Header/Components/AddBlog/AddBlog"
+import Profile from "./Components/Profile/Profile"
 import './Header.scss';
 
 const Header = ({ user, fetchAllBlogs, fetchMyBlogs }) => {
@@ -21,12 +21,8 @@ const Header = ({ user, fetchAllBlogs, fetchMyBlogs }) => {
                     <img src={logo} alt="logo" width={35} />
                     <p>Blogger</p>
                 </div>
-
                 <div className="sections">
-                    <button className="all-blogs" onClick={fetchAllBlogs}>
-                        All Blogs
-                    </button>
-
+                    <button className="all-blogs" onClick={fetchAllBlogs}>All Blogs</button>
                     <button className="my-blogs" onClick={() => {
                         if (!user) return alert("Please Login!");
                         fetchMyBlogs();
@@ -34,15 +30,10 @@ const Header = ({ user, fetchAllBlogs, fetchMyBlogs }) => {
                         My Blogs
                     </button>
 
-                    <button className="add-blog" onClick={() => setShowAddBlog(true)}>
-                        +
-                    </button>
+                    <button className="add-blog" onClick={() => setShowAddBlog(true)}>+</button>
 
                     <div className="profile-wrapper">
-                        <button className="profile" onClick={() => setShowProfile(!showProfile)}>
-                            {getInitials()}
-                        </button>
-
+                        <button className="profile" onClick={() => setShowProfile(!showProfile)}>{getInitials()}</button>
                         {showProfile && (
                             <Profile user={user} onClose={() => setShowProfile(false)} />
                         )}
@@ -53,7 +44,7 @@ const Header = ({ user, fetchAllBlogs, fetchMyBlogs }) => {
             {showAddBlog && (
                 <AddBlog
                     onClose={() => setShowAddBlog(false)}
-                    onBlogAdded={fetchAllBlogs} // IMPORTANT
+                    onBlogAdded={fetchAllBlogs}
                 />
             )}
         </>

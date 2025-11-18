@@ -13,8 +13,11 @@ const Dashboard = () => {
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [selectedBlog, setSelectedBlog] = useState(null);
+    const [mode, setMode] = useState("all"); // "all" or "mine"
 
-    // Fetch user
+    const observer = useRef();
+
+    // Fetch logged-in user
     const getUser = async () => {
         const token = localStorage.getItem("token");
         if (!token) return;
@@ -30,19 +33,28 @@ const Dashboard = () => {
         }
     };
 
-    // Fetch blogs with pagination
-    const fetchBlogs = async (currentPage = 1) => {
-        if (!hasMore && currentPage !== 1) return;
+    // Fetch blogs (all or mine) with pagination
+    const fetchBlogs = async (currentPage = 1, currentMode = mode) => {
         setLoading(true);
         try {
-            const res = await fetch(`http://127.0.0.1:5555/fetchAllBlogs?page=${currentPage}&limit=12`);
+            const url =
+                currentMode === "all"
+                    ? `http://127.0.0.1:5555/fetchAllBlogs?page=${currentPage}&limit=12`
+                    : `http://127.0.0.1:5555/fetchMyBlogs?page=${currentPage}&limit=12`;
+
+            const headers =
+                currentMode === "mine"
+                    ? { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                    : {};
+
+            const res = await fetch(url, { headers });
             const data = await res.json();
 
             if (data.ok) {
-                setBlogs(prev => currentPage === 1 ? data.data : [...prev, ...data.data]);
+                setBlogs(prev =>
+                    currentPage === 1 ? data.data : [...prev, ...data.data]
+                );
                 setHasMore(data.hasMore);
-            } else {
-                alert(data.message);
             }
         } catch (err) {
             console.log("Fetch blogs error:", err);
@@ -51,8 +63,7 @@ const Dashboard = () => {
         }
     };
 
-    // Infinite scroll handler
-    const observer = useRef();
+    // Infinite scroll observer
     const lastBlogRef = useCallback(node => {
         if (loading) return;
         if (observer.current) observer.current.disconnect();
@@ -66,29 +77,41 @@ const Dashboard = () => {
         if (node) observer.current.observe(node);
     }, [loading, hasMore]);
 
+    // First load
     useEffect(() => {
         getUser();
-        fetchBlogs(1);
+        fetchBlogs(1, "all");
     }, []);
 
+    // Handle page changes for infinite scroll
     useEffect(() => {
         if (page === 1) return;
-        fetchBlogs(page);
+        fetchBlogs(page, mode);
     }, [page]);
 
-    // Refresh after add/edit/delete
-    const refreshBlogs = () => {
+    // Switch to all blogs
+    const handleAllBlogs = () => {
+        setMode("all");
         setPage(1);
-        fetchBlogs(1);
+        fetchBlogs(1, "all");
+    };
+
+    // Switch to my blogs
+    const handleMyBlogs = () => {
+        if (!user) return alert("Please log in first");
+        setMode("mine");
+        setPage(1);
+        fetchBlogs(1, "mine");
     };
 
     return (
         <div className="dashboard-container">
             <Header
                 user={user}
-                fetchAllBlogs={refreshBlogs}
-                fetchMyBlogs={() => alert("My Blogs not implemented for infinite scroll")}
+                fetchAllBlogs={handleAllBlogs}
+                fetchMyBlogs={handleMyBlogs}
             />
+
             <BlogBackground />
 
             <div className="blogs">
@@ -106,8 +129,8 @@ const Dashboard = () => {
                     blog={selectedBlog}
                     currentUser={user}
                     onClose={() => setSelectedBlog(null)}
-                    onUpdate={refreshBlogs}
-                    onDelete={refreshBlogs}
+                    onUpdate={() => fetchBlogs(1, mode)}
+                    onDelete={() => fetchBlogs(1, mode)}
                 />
             )}
         </div>

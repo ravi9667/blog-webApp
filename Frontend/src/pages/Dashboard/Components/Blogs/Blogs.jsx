@@ -2,7 +2,18 @@ import React from "react";
 import './Blogs.scss';
 
 const Blogs = ({ blogs, user, onBlogClick, lastBlogRef }) => {
-    if (!blogs || blogs.length === 0) return <h2>No Blogs Found</h2>;
+    if (!blogs || blogs.length === 0) return <h2
+        style={{
+            marginTop: '100px',
+            textAlign: 'center',
+            color: '#3b3b3bff',
+            fontFamily: 'Arial, sans-serif',
+            fontSize: '28px',
+            fontWeight: 600,
+        }}
+    >
+        No Blogs Found
+    </h2>;
 
     return (
         <div className="blogs-list">
@@ -32,7 +43,7 @@ const Blogs = ({ blogs, user, onBlogClick, lastBlogRef }) => {
                         <h1>{blog.topic}</h1>
                         <p>{blog.blog}</p>
                         <div>
-                            <h4>{`Author - ${user?.name || 'Unknown'}`}</h4>
+                            <h4>{`Author - ${blog.userId?.name ? blog.userId.name : 'Unknown'}`}</h4>
                             <p>{`Created At - ${blogCreatedTime}`}</p>
                         </div>
                     </div>

@@ -8,6 +8,7 @@ export const fetchAllBlogs = async (req, res) => {
 
         const blogs = await blogData
             .find()
+            .populate('userId', 'name')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
@@ -29,13 +30,34 @@ export const fetchAllBlogs = async (req, res) => {
 
 export const fetchMyBlogs = async (req, res) => {
     try {
-        const blogs = await blogData.find({ userId: req.user.id });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12;
+        const skip = (page - 1) * limit;
 
-        res.send({ ok: true, data: blogs });
+        if (!req.user || !req.user._id) {
+            return res.status(401).send({ ok: false, message: "Unauthorized" });
+        }
 
+        const userId = mongoose.Types.ObjectId(req.user._id); // convert to ObjectId
+
+        const blogs = await blogData
+            .find({ userId })
+            .populate('userId', 'name')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const total = await blogData.countDocuments({ userId });
+
+        res.send({
+            ok: true,
+            data: blogs,
+            total,
+            hasMore: page * limit < total
+        });
     } catch (err) {
-        console.log(err);
-        res.send({ ok: false, message: "Failed to fetch my blogs" });
+        console.error("Fetch My Blogs Error:", err);
+        res.status(500).send({ ok: false, message: "Failed to fetch my blogs" });
     }
 };
 
