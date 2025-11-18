@@ -1,0 +1,66 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { blogUsers } from "../Models/blogUsers.js";
+
+export const signup = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password)
+            return res.send({ ok: false, message: "All fields required" });
+
+        const exists = await blogUsers.findOne({ email });
+        if (exists)
+            return res.send({ ok: false, message: "Email already registered" });
+
+        const hashed = await bcrypt.hash(password, 10);
+
+        const user = await blogUsers.create({
+            name,
+            email,
+            password: hashed
+        });
+
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        res.send({ ok: true, message: "Signup Successful", token });
+
+    } catch (err) {
+        console.log(err);
+        res.send({ ok: false, message: "Signup Failed" });
+    }
+};
+
+
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password)
+            return res.send({ ok: false, message: "All fields required" });
+
+        const user = await blogUsers.findOne({ email });
+        if (!user)
+            return res.send({ ok: false, message: "Email not found" });
+
+        const match = await bcrypt.compare(password, user.password);
+        if (!match)
+            return res.send({ ok: false, message: "Incorrect password" });
+
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        res.send({ ok: true, message: "Login Successful", token });
+
+    } catch (err) {
+        console.log(err);
+        res.send({ ok: false, message: "Login Failed" });
+    }
+};
