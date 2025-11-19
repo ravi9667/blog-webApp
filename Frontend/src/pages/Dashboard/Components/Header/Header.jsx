@@ -23,12 +23,7 @@ const Header = ({ user, fetchAllBlogs, fetchMyBlogs }) => {
                 </div>
                 <div className="sections">
                     <button className="all-blogs" onClick={fetchAllBlogs}>All Blogs</button>
-                    <button className="my-blogs" onClick={() => {
-                        if (!user) return alert("Please Login!");
-                        fetchMyBlogs();
-                    }}>
-                        My Blogs
-                    </button>
+                    <button className="my-blogs" onClick={fetchMyBlogs}>My Blogs</button>
 
                     <button className="add-blog" onClick={() => setShowAddBlog(true)}>+</button>
 

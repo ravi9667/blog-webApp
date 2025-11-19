@@ -2,7 +2,7 @@ import { blogUsers } from "../Models/blogUsers.js";
 
 export const fetchUser = async (req, res) => {
     try {
-        const user = await blogUsers.findById(req.user.id, {
+        const user = await blogUsers.findById(req.user._id, {
             name: 1,
             email: 1
         });
