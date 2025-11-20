@@ -11,7 +11,7 @@ export const fetchAllBlogs = async (req, res) => {
 
         const blogs = await blogData
             .find()
-            .populate("userId", "name") // populate name from user collection
+            .populate("userId", "name")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
@@ -39,13 +39,16 @@ export const fetchMyBlogs = async (req, res) => {
 
         // Convert string _id from JWT to ObjectId
         const userId = new mongoose.Types.ObjectId(req.user._id);
+        console.log(typeof userId, userId)
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 12;
         const skip = (page - 1) * limit;
 
+        console.log(page, limit, skip);
+
         const blogs = await blogData
-            .find({ userId })
+            .find({ userId: userId })
             .populate("userId", "name")
             .sort({ createdAt: -1 })
             .skip(skip)

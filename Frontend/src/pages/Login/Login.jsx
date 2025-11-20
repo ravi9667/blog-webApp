@@ -7,20 +7,21 @@ import logo from '../../assets/peercoin.png'
 import userIcon from '../../assets/user.png'
 import passIcon from '../../assets/padlock.png'
 import illustration from '../../assets/login-illustration.png'
+import { postRequest } from "../../apiRoutes";
 import './Login.scss';
 
 const Login = () => {
     const navigate = useNavigate();
-    const [ isLoading, setIsLoading ] = useState(false);
-    const [ isPasswordHidden, setIsPasswordHidden ] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const [error, setError] = useState("");
-    const [ loginFormData, setLoginFormData ] = useState({
+    const [loginFormData, setLoginFormData] = useState({
         email: '',
         password: ''
     });
 
     const handleFormInput = (field, event) => {
-        setLoginFormData({...loginFormData, [field]: event.target.value})
+        setLoginFormData({ ...loginFormData, [field]: event.target.value })
     }
 
     const handleLogin = async () => {
@@ -35,23 +36,18 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://127.0.0.1:5555/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(loginFormData),
-            });
+            const data = await postRequest("http://127.0.0.1:5555/login", loginFormData);
 
-            const data = await response.json();
             console.log("Login Response:", data);
 
             if (data.ok) {
                 localStorage.setItem("token", data.token);
                 alert("Login Successful!");
                 navigate("/dashboard");
+            } else {
                 setError(data.message || "Invalid credentials");
             }
+
         } catch (err) {
             console.error("Login Error:", err);
             setError("Something went wrong. Please try again.");
@@ -76,7 +72,7 @@ const Login = () => {
                             <p>Continue to Blogger</p>
                         </div>
                         <div className="input-group group-1">
-                            <img src={userIcon} alt="" className="user-icon"/>
+                            <img src={userIcon} alt="" className="user-icon" />
                             <input
                                 type="email"
                                 className="input"
@@ -88,7 +84,7 @@ const Login = () => {
                             <label>Email</label>
                         </div>
                         <div className="input-group group-2">
-                            <img src={passIcon} alt="" className="password-icon"/>
+                            <img src={passIcon} alt="" className="password-icon" />
                             <input
                                 type={isPasswordHidden ? 'password' : 'text'}
                                 className="input"
@@ -105,7 +101,7 @@ const Login = () => {
                     </div>
                 </div>
                 <div className="login-bg">
-                    <img src={illustration} alt="" className="login-illustrations"/>
+                    <img src={illustration} alt="" className="login-illustrations" />
                 </div>
             </div>
         )

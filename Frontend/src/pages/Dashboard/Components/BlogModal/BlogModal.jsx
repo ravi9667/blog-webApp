@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { patchData, deleteData } from "../../../../apiRoutes";
 import './BlogModal.scss';
 
 const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
@@ -13,24 +14,13 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
         year: 'numeric'
     });
 
+    // Update blog
     const handleUpdate = async () => {
-        const token = localStorage.getItem("token");
-
-        const response = await fetch("http://127.0.0.1:5555/updateBlog", {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                _id: blog._id,
-                topic: editTitle,
-                blog: editContent
-            })
+        const data = await patchData("http://127.0.0.1:5555/updateBlog", {
+            _id: blog._id,
+            topic: editTitle,
+            blog: editContent
         });
-
-        const data = await response.json();
-        console.log("UPDATE RES:", data);
 
         if (data.ok) {
             alert("Blog Updated Successfully");
@@ -42,22 +32,13 @@ const BlogModal = ({ blog, onClose, onDelete, onUpdate, currentUser }) => {
         }
     };
 
+    // Delete blog
     const handleDelete = async () => {
         if (!window.confirm("Are you sure you want to delete this blog?")) return;
 
-        const token = localStorage.getItem("token");
-
-        const response = await fetch("http://127.0.0.1:5555/deleteBlog", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ blogId: blog._id })
+        const data = await deleteData("http://127.0.0.1:5555/deleteBlog", {
+            blogId: blog._id
         });
-
-        const data = await response.json();
-        console.log("DELETE RES:", data);
 
         if (data.ok) {
             alert("Blog Deleted Successfully");

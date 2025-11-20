@@ -4,6 +4,7 @@ import BlogBackground from "./Components/BlogBackground/BlogBackground";
 import Blogs from "./Components/Blogs/Blogs";
 import Loader from "../../ReusableComponents/Loader/Loader";
 import BlogModal from "./Components/BlogModal/BlogModal";
+import { getRequest } from "../../apiRoutes"; // Import the universal GET helper
 import "./style.scss";
 
 const Dashboard = () => {
@@ -17,84 +18,39 @@ const Dashboard = () => {
 
     const observer = useRef();
 
-    // ---------------------------
-    // Fetch logged-in user
-    // ---------------------------
     const getUser = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        try {
-            const res = await fetch("http://127.0.0.1:5555/fetchUser", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await res.json();
-            if (data.ok) setUser(data.data);
-        } catch (err) {
-            console.log("Fetch user error:", err);
-        }
+        const data = await getRequest("http://127.0.0.1:5555/fetchUser", true);
+        if (data.ok) setUser(data.data);
     };
 
-    // ---------------------------
-    // 1) Fetch All Blogs
-    // ---------------------------
+    // fetch all blogs
     const fetchAllBlogs = async (currentPage = 1) => {
         setLoading(true);
-        try {
-            const res = await fetch(
-                `http://127.0.0.1:5555/fetchAllBlogs?page=${currentPage}&limit=12`
-            );
-
-            const data = await res.json();
-
-            if (data.ok) {
-                setBlogs((prev) =>
-                    currentPage === 1 ? data.data : [...prev, ...data.data]
-                );
-                setHasMore(data.hasMore);
-                console.log("sdat", data)
-            }
-        } catch (err) {
-            console.log("Fetch All Blogs error:", err);
-        } finally {
-            setLoading(false);
+        const data = await getRequest(
+            `http://127.0.0.1:5555/fetchAllBlogs?page=${currentPage}&limit=12`
+        );
+        if (data.ok) {
+            setBlogs((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
+            setHasMore(data.hasMore);
         }
+        setLoading(false);
     };
 
-    // ---------------------------
-    // 2) Fetch My Blogs
-    // ---------------------------
+    // fetch my Blogs
     const fetchMyBlogs = async (currentPage = 1) => {
         setLoading(true);
-        try {
-            const res = await fetch(
-                `http://127.0.0.1:5555/fetchMyBlogs?page=${currentPage}&limit=12`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                }
-            );
-
-            const data = await res.json();
-
-            if (data.ok) {
-                setBlogs((prev) =>
-                    currentPage === 1 ? data.data : [...prev, ...data.data]
-                );
-                setHasMore(data.hasMore);
-                console.log(data)
-            }
-        } catch (err) {
-            console.log("Fetch My Blogs error:", err);
-        } finally {
-            setLoading(false);
+        const data = await getRequest(
+            `http://127.0.0.1:5555/fetchMyBlogs?page=${currentPage}&limit=12`,
+            true
+        );
+        if (data.ok) {
+            setBlogs((prev) => (currentPage === 1 ? data.data : [...prev, ...data.data]));
+            setHasMore(data.hasMore);
         }
+        setLoading(false);
     };
 
-    // ---------------------------
     // Infinite Scroll Observer
-    // ---------------------------
     const lastBlogRef = useCallback(
         (node) => {
             if (loading) return;
@@ -111,50 +67,35 @@ const Dashboard = () => {
         [loading, hasMore]
     );
 
-    // ---------------------------
     // First load
-    // ---------------------------
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) getUser();
         fetchAllBlogs(1);
     }, []);
 
-    // ---------------------------
     // When page changes (infinite scroll)
-    // ---------------------------
     useEffect(() => {
         if (page === 1) return;
-
-        if (mode === "all") {
-            fetchAllBlogs(page);
-        } else {
-            if (user) {
-                fetchMyBlogs(page);
-            }
-        }
+        if (mode === "all") fetchAllBlogs(page);
+        else if (user) fetchMyBlogs(page);
     }, [page, user]);
 
-    // ---------------------------
     // Switch to All Blogs
-    // ---------------------------
     const handleAllBlogs = () => {
         setMode("all");
         setPage(1);
         fetchAllBlogs(1);
     };
 
-    // ---------------------------
     // Switch to My Blogs
-    // ---------------------------
     const handleMyBlogs = () => {
         if (!user) {
             alert("Please log in first");
             return;
         }
-
         setMode("mine");
-        setBlogs([]);   // clear previous blogs
+        setBlogs([]); // clear previous blogs
         setPage(1);
         fetchMyBlogs(1);
     };
@@ -165,6 +106,7 @@ const Dashboard = () => {
                 user={user}
                 fetchAllBlogs={handleAllBlogs}
                 fetchMyBlogs={handleMyBlogs}
+                mode={mode}
             />
 
             <BlogBackground />

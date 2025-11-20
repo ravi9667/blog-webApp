@@ -8,6 +8,7 @@ import userIcon from "../../assets/user.png";
 import emailIcon from "../../assets/mail.png";
 import passIcon from "../../assets/padlock.png";
 import illustration from "../../assets/login-illustration.png";
+import { postRequest } from "../../apiRoutes";
 import "./Signup.scss";
 
 const Signup = () => {
@@ -37,25 +38,18 @@ const Signup = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://127.0.0.1:5555/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(signupFormData),
-            });
+            const data = await postRequest("http://127.0.0.1:5555/signup", signupFormData);
 
-            const data = await response.json();
             console.log("Signup Response:", data);
 
             if (data.ok) {
                 localStorage.setItem("token", data.token);
-
                 alert("Signup Successful!");
                 navigate("/login");
             } else {
                 setError(data.message || "Signup failed");
             }
+
         } catch (err) {
             console.error("Signup Error:", err);
             setError("Something went wrong. Please try again.");

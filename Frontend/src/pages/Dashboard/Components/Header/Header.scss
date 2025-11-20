@@ -65,8 +65,27 @@
             &:hover::after {
                 width: 80%;
             }
-        }
 
+            /* ACTIVE STATE */
+            &.active {
+                background: rgba(37, 99, 235, 0.08);
+                /* keep same as focus/hover */
+                color: #2563eb;
+
+                &::after {
+                    width: 80%;
+                    /* underline visible */
+                }
+
+                &:hover,
+                &:focus {
+                    background: rgba(37, 99, 235, 0.08);
+                    /* same as active */
+                    color: #2563eb;
+                    /* keep text color same */
+                }
+            }
+        }
 
         .add-blog {
             all: unset;
@@ -103,9 +122,6 @@
             }
         }
 
-
-
-
         .profile {
             all: unset;
             width: 42px;
@@ -116,7 +132,7 @@
 
             background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa);
             color: #ffffff;
-            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 16px;
             font-weight: 600;
             letter-spacing: 0.3px;
@@ -144,6 +160,5 @@
                     inset 0 0 8px rgba(255, 255, 255, 0.25);
             }
         }
-
     }
 }
