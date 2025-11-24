@@ -41,11 +41,11 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email || !password)
-            return res.send({ ok: false, message: "All fields required" });
+            return res.status(400).send({ ok: false, message: "All fields required" });
 
         const user = await blogUsers.findOne({ email });
         if (!user)
-            return res.send({ ok: false, message: "Email not found" });
+            return res.status(400).send({ ok: false, message: "Email not found" });
 
         const match = await bcrypt.compare(password, user.password);
         if (!match)

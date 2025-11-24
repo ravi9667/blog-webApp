@@ -15,9 +15,14 @@ app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
-mongoose.connect("mongodb://localhost:27017/blogs")
-    .then(() => console.log("DB Connected"))
-    .catch(() => console.log("DB Connection Failed"));
+try {
+    const mongoConnect = mongoose.connect("mongodb://localhost:27017/blogs")
+    if(mongoConnect) {
+        console.log("DB Conected !!")
+    }
+} catch(err) {
+    console.log("Error Connecting DB")
+}
 
 // routes
 app.use("/", authRoutes);

@@ -69,20 +69,12 @@
             /* ACTIVE STATE */
             &.active {
                 background: rgba(37, 99, 235, 0.08);
-                /* keep same as focus/hover */
                 color: #2563eb;
-
-                &::after {
-                    width: 80%;
-                    /* underline visible */
-                }
 
                 &:hover,
                 &:focus {
                     background: rgba(37, 99, 235, 0.08);
-                    /* same as active */
                     color: #2563eb;
-                    /* keep text color same */
                 }
             }
         }

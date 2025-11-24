@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { use, useRef, useState } from "react";
 import Loader from '../../ReusableComponents/Loader/Loader'
 import show from '../../assets/eye.png'
 import hide from '../../assets/hide.png'
@@ -24,6 +24,12 @@ const Login = () => {
         setLoginFormData({ ...loginFormData, [field]: event.target.value })
     }
 
+    useRef(() => {
+        const getToken = localStorage.getToken("token")
+        if (getToken) {
+            navigate("/dashboard")
+        }
+    })
     const handleLogin = async () => {
         const { email, password } = loginFormData;
 
@@ -78,6 +84,7 @@ const Login = () => {
                                 className="input"
                                 required
                                 placeholder=" "
+                                autoComplete="username"
                                 onChange={(e) => handleFormInput('email', e)}
                                 value={loginFormData.email}
                             />
@@ -90,6 +97,7 @@ const Login = () => {
                                 className="input"
                                 required
                                 placeholder=" "
+                                autoComplete="current-password"
                                 onChange={(e) => handleFormInput('password', e)}
                                 value={loginFormData.password}
                             />
